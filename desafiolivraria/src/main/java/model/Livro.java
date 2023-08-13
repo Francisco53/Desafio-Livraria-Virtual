@@ -51,6 +51,6 @@ public abstract class Livro {
 
 	@Override
 	public String toString() {
-		return "Título: " + getTitulo() + "\n" + "Autores: " + getAutores() + "\n" + "Editora: " + getEditora() + "\n" + "Preço: " + getPreco();
+		return "Título: " + getTitulo() + "\n" + "Autores: " + getAutores() + "\n" + "Editora: " + getEditora() + "\n" + "Preço: R$" + getPreco();
 	}
 }

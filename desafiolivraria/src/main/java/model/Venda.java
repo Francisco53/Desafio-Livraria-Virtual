@@ -1,7 +1,6 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.List;
+import view.LivrariaVirtual;
 
 public class Venda {
 
@@ -9,15 +8,14 @@ public class Venda {
 	private int numero;
 	private String cliente;
 	private float valor;
-	List<Livro> livros = new ArrayList<Livro>();
+	private Livro[] livros;
 
 	public Venda() {
 	}
 
-	public Venda(String cliente, float valor) {
+	public Venda(String cliente) {
 		this.cliente = cliente;
-		this.valor = valor;
-		numVendas++;
+		livros = new Livro[LivrariaVirtual.getMaxVendas()];
 	}
 
 	public int getNumVendas() {
@@ -25,7 +23,11 @@ public class Venda {
 	}
 
 	public int getNumero() {
-		return numero = getNumVendas();
+		return numero;
+	}
+
+	public void setNumero(int numero) {
+		this.numero = numero;
 	}
 
 	public String getCliente() {
@@ -44,23 +46,34 @@ public class Venda {
 		this.valor = valor;
 	}
 
-	public List<Livro> getLivros() {
+	public Livro[] getLivros() {
 		return livros;
 	}
 
-	public void addLivro(Livro livro) {
-		livros.add(livro);
+	public void addLivro(Livro l, int index) {
+	    if (index < 0 || index >= livros.length) {
+	        throw new IndexOutOfBoundsException("Índice inválido: " + index);
+	    }
+
+	    livros[index] = l;
+	    setValor(getValor() + l.getPreco());
 	}
 
 	public void listarLivros() {
-		if (livros.isEmpty()) {
+		Livro[] listaLivros = getLivros();
+
+		if (listaLivros == null || listaLivros.length == 0) {
 			System.out.println("Nenhum livro na venda.");
 		} else {
 			System.out.println("Livros na venda:");
-			for (int i = 0; i < livros.size(); i++) {
-				Livro livro = livros.get(i);
-				System.out.println("Livro " + (i + 1) + ": " + livro.getTitulo());
+			for (Livro livro : listaLivros) {
+				System.out.println(livro.toString());
 			}
 		}
+	}
+	
+	public void finalizarVenda() {
+	    numVendas++;
+	    setNumero(numVendas);
 	}
 }

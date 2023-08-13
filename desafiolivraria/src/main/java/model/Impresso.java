@@ -28,7 +28,7 @@ public class Impresso extends Livro {
 	}
 
 	public void atualizarEstoque() {
-
+		setEstoque(getEstoque() - 1);
 	}
 
 	@Override
