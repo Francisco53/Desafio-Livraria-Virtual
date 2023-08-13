@@ -2,13 +2,11 @@
 
 ## Intregrantes:
 - Francisco
-- Bruno
 - Josué
 - Juvenal
 
 ## Distribuição das questões:
 
-Francisco: [Classe Livro e Classe Venda]  
-Bruno: [3]  
-Josué: [4]  
-Juvenal: [5]
+Francisco: [Classes Livro e Venda]   
+Josué: [Classes Impresso, Eletronico, LivrariaVirtual]  
+Juvenal: []
