@@ -33,6 +33,6 @@ public class Impresso extends Livro {
 
 	@Override
 	public String toString() {
-		return super.toString() + "\n" + "Frete: " + getFrete() + "\n" + "Estoque: " + getEstoque();
+		return super.toString() + "\n" + "Frete: R$" + getFrete() + "\n" + "Estoque: " + getEstoque();
 	}
 }

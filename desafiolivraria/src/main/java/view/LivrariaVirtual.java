@@ -9,7 +9,7 @@ import model.Venda;
 
 public class LivrariaVirtual {
 
-	public Scanner sc;
+	public static Scanner sc;
 
 	private static final int MAX_IMPRESSOS = 10;
 	private static final int MAX_ELETRONICOS = 20;
@@ -37,6 +37,10 @@ public class LivrariaVirtual {
 
 	public static int getMaxVendas() {
 		return MAX_VENDAS;
+	}
+
+	public static int getMaxLivros() {
+		return MAX_IMPRESSOS + MAX_ELETRONICOS;
 	}
 
 	public int getNumImpressos() {
@@ -114,36 +118,34 @@ public class LivrariaVirtual {
 	public void cadastrarLivro() {
 		try {
 			int opcao;
-			while (true) {
-				System.out.println("Informa o tipo de livro a ser cadastrado:");
-				System.out.println("[1] Impresso");
-				System.out.println("[2] Eletrônico");
-				System.out.println("[3] Ambos");
-				System.out.println("[4] Voltar");
-				opcao = sc.nextInt();
-				sc.nextLine();
+			System.out.println("Informa o tipo de livro a ser cadastrado:");
+			System.out.println("[1] Impresso");
+			System.out.println("[2] Eletrônico");
+			System.out.println("[3] Ambos");
+			System.out.println("[4] Voltar");
+			opcao = sc.nextInt();
+			sc.nextLine();
 
-				switch (opcao) {
-				case 1: {
-					cadastrarLivroImpresso();
-					break;
-				}
-				case 2: {
-					cadastrarLivroEletronico();
-					break;
-				}
-				case 3: {
-					cadastrarLivroImpresso();
-					cadastrarLivroEletronico();
-					break;
-				}
-				case 4: {
-					return;
-				}
-				default: {
-					System.out.println("Entrada inválida.");
-				}
-				}
+			switch (opcao) {
+			case 1: {
+				cadastrarLivroImpresso();
+				break;
+			}
+			case 2: {
+				cadastrarLivroEletronico();
+				break;
+			}
+			case 3: {
+				cadastrarLivroImpresso();
+				cadastrarLivroEletronico();
+				break;
+			}
+			case 4: {
+				return;
+			}
+			default: {
+				System.out.println("Entrada inválida.");
+			}
 			}
 		} catch (InputMismatchException e) {
 			System.out.println("Entrada inválida.");
@@ -220,7 +222,7 @@ public class LivrariaVirtual {
 	}
 
 	public void realizarVenda() {
-		if (getNumImpressos() == 0 || getNumEletronicos() == 0) {
+		if (getNumImpressos() == 0 && getNumEletronicos() == 0) {
 			System.out.println("Não há livros a serem comprados :(");
 			return;
 		}
@@ -262,10 +264,17 @@ public class LivrariaVirtual {
 					Impresso[] listaImpressos = getImpressos();
 					Impresso livro = listaImpressos[codigoLivro - 1];
 
+					if (livro.getEstoque() == 0) {
+						System.out.println("Não há livro em estoque.");
+						break;
+					}
+
 					venda.addLivro(livro, i);
 
-					if (venda.getLivros().length == i + 1) {
+					if (venda.getLivros()[i] != null) {
 						i++;
+						livro.atualizarEstoque();
+						System.out.println("Livro adicionado.");
 					}
 					break;
 				}
@@ -280,8 +289,9 @@ public class LivrariaVirtual {
 
 					venda.addLivro(livro, i);
 
-					if (venda.getLivros().length == i + 1) {
+					if (venda.getLivros()[i] != null) {
 						i++;
+						System.out.println("Livro adicionado.");
 					}
 					break;
 				}
@@ -309,13 +319,12 @@ public class LivrariaVirtual {
 	}
 
 	public void listarLivrosImpressos() {
-		Impresso[] listaImpressos = getImpressos();
-		System.out.println("*** Livros Impressos ***");
-		if (listaImpressos != null) {
-			for (int i = 0; i < listaImpressos.length; i++) {
-				if (listaImpressos[i] != null) {
+		if (getNumImpressos() > 0) {
+			System.out.println("*** Livros Impressos ***");
+			for (int i = 0; i < getImpressos().length; i++) {
+				if (getImpressos()[i] != null) {
 					System.out.println("Livro [" + (i + 1) + "]");
-					System.out.println(listaImpressos[i].toString());
+					System.out.println(getImpressos()[i].toString());
 					System.out.println("--------------------");
 				} else {
 					return;
@@ -327,13 +336,12 @@ public class LivrariaVirtual {
 	}
 
 	public void listarLivrosEletronicos() {
-		Eletronico[] listaEletronicos = getEletronicos();
-		System.out.println("*** Livros Eletrônicos ***");
-		if (listaEletronicos != null) {
-			for (int i = 0; i < listaEletronicos.length; i++) {
-				if (listaEletronicos[i] != null) {
+		if (getNumEletronicos() > 0) {
+			System.out.println("*** Livros Eletrônicos ***");
+			for (int i = 0; i < getEletronicos().length; i++) {
+				if (getEletronicos()[i] != null) {
 					System.out.println("Livro [" + (i + 1) + "]");
-					System.out.println(listaEletronicos[i].toString());
+					System.out.println(getEletronicos()[i].toString());
 					System.out.println("--------------------");
 				} else {
 					return;
@@ -350,17 +358,69 @@ public class LivrariaVirtual {
 	}
 
 	public void listarVendas() {
-		
+		if (getNumVendas() > 0) {
+			System.out.println("*** Vendas realizadas ***");
+			Venda[] listaVendas = getVendas();
+			for (Venda venda : listaVendas) {
+				if (venda == null) {
+					return;
+				}
+				System.out.println("Venda " + venda.getNumero());
+				venda.listarLivros();
+				System.out.println("---------------------");
+			}
+		} else {
+			System.out.println("Não há vendas registradas :(");
+		}
 	}
 
 	public static void main(String[] args) {
 
 		LivrariaVirtual livraria = new LivrariaVirtual();
-		livraria.realizarVenda();
-		livraria.cadastrarLivro();
-		livraria.listarLivrosImpressos();
-		livraria.listarLivrosEletronicos();
 
-		livraria.sc.close();
+		int opcao;
+
+		while (true) {
+			System.out.println("--------------------------");
+			System.out.println("|    Livraria Virtual    |");
+			System.out.println("|------------------------|");
+			System.out.println("| [1] Cadastrar livro    |");
+			System.out.println("| [2] Realizar uma venda |");
+			System.out.println("| [3] Listar livros      |");
+			System.out.println("| [4] Listar vendas      |");
+			System.out.println("| [5] Sair do programa   |");
+			System.out.println("--------------------------");
+			System.out.print("Operação: ");
+			opcao = sc.nextInt();
+			sc.nextLine();
+
+			switch (opcao) {
+			case 1: {
+				livraria.cadastrarLivro();
+				break;
+			}
+			case 2: {
+				livraria.realizarVenda();
+				break;
+			}
+			case 3: {
+				livraria.listarLivros();
+				break;
+			}
+			case 4: {
+				livraria.listarVendas();
+				break;
+			}
+			case 5: {
+				System.out.println("Saindo do programa...");
+				sc.close();
+				return;
+			}
+			default: {
+				System.out.println("Entrada inválida.");
+				break;
+			}
+			}
+		}
 	}
 }

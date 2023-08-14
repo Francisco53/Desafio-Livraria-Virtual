@@ -15,7 +15,7 @@ public class Venda {
 
 	public Venda(String cliente) {
 		this.cliente = cliente;
-		livros = new Livro[LivrariaVirtual.getMaxVendas()];
+		livros = new Livro[LivrariaVirtual.getMaxLivros()];
 	}
 
 	public int getNumVendas() {
@@ -51,12 +51,12 @@ public class Venda {
 	}
 
 	public void addLivro(Livro l, int index) {
-	    if (index < 0 || index >= livros.length) {
-	        throw new IndexOutOfBoundsException("Índice inválido: " + index);
-	    }
+		if (index < 0 || index >= livros.length) {
+			throw new IndexOutOfBoundsException("Índice inválido: " + index);
+		}
 
-	    livros[index] = l;
-	    setValor(getValor() + l.getPreco());
+		livros[index] = l;
+		setValor(getValor() + l.getPreco());
 	}
 
 	public void listarLivros() {
@@ -67,13 +67,16 @@ public class Venda {
 		} else {
 			System.out.println("Livros na venda:");
 			for (Livro livro : listaLivros) {
+				if (livro == null) {
+					return;
+				}
 				System.out.println(livro.toString());
 			}
 		}
 	}
-	
+
 	public void finalizarVenda() {
-	    numVendas++;
-	    setNumero(numVendas);
+		numVendas++;
+		setNumero(numVendas);
 	}
 }
